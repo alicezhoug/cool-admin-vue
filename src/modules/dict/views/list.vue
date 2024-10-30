@@ -66,7 +66,8 @@
 <script lang="ts" name="dict-list" setup>
 import { setFocus, useCrud, useTable, useUpsert } from "@cool-vue/crud";
 import { useCool } from "/@/cool";
-import { computed } from "vue";
+import { computed,reactive } from "vue";
+
 import { deepTree } from "/@/cool/utils";
 import { cloneDeep } from "lodash-es";
 import { useDict } from "../index";
@@ -74,6 +75,23 @@ import { useViewGroup } from "/@/plugins/view";
 
 const { service } = useCool();
 const { dict } = useDict();
+
+
+const options=reactive({
+	stopStatus:[
+		{
+			label:"停用",
+			value:true,
+			type: "success"
+		},
+		{
+			label:"启用",
+			value:false,
+			type:"danger"
+		}
+	]
+});
+
 
 const { ViewGroup } = useViewGroup({
 	label: "类型",
@@ -113,7 +131,17 @@ const { ViewGroup } = useViewGroup({
 						}
 					},
 					required: true
+				},
+				{
+					prop: "stop",
+					label: "状态",
+					value: false,
+					component: {
+						name: "el-radio-group",
+						options: options.stopStatus
+					}
 				}
+
 			]
 		};
 	}
@@ -188,6 +216,15 @@ const Upsert = useUpsert({
 			component: { name: "el-input-number", props: { min: 1 } }
 		},
 		{
+			prop: "stop",
+			label: "状态",
+			value: false,
+			component: {
+				name: "el-radio-group",
+				options: options.stopStatus
+			}
+		},
+		{
 			label: "备注",
 			prop: "remark",
 			component: { name: "el-input", props: { type: "textarea", rows: 4 } }
@@ -226,10 +263,16 @@ const Table = useTable({
 			type: "selection"
 		},
 		{ label: "名称", prop: "name", align: "left", minWidth: 200 },
-		{ label: "ID", prop: "id", minWidth: 120 },
+		{ label: "ID", prop: "id", minWidth: 120,hidden:true },
 		{ label: "值", prop: "value", minWidth: 200, showOverflowTooltip: true },
 		{ label: "备注", prop: "remark", showOverflowTooltip: true, minWidth: 170 },
 		{ label: "排序", prop: "orderNum", sortable: "desc", width: 100, fixed: "right" },
+		{
+			label: "状态",
+			prop: "stop",
+			minWidth: 120,
+			dict: options.stopStatus
+		},
 		{ label: "创建时间", prop: "createTime", sortable: "custom", minWidth: 170 },
 		{ label: "更新时间", prop: "updateTime", sortable: "custom", minWidth: 170 },
 		{

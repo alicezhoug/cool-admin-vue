@@ -26,20 +26,33 @@
 					@click="toDetail(item)"
 				>
 					<div class="avatar">
-						<el-badge :value="item.num" :hidden="item.num == 0">
-							<cl-avatar shape="square" :src="item.avatar" />
+						<el-badge :value="item.notReadCount" :hidden="item.notReadCount == 0">
+							<cl-avatar shape="square" :src="item.avatarUrl" />
 						</el-badge>
 					</div>
 
 					<div class="det">
 						<p class="name">{{ item.nickName }}</p>
-						<p class="message">
-							{{ item.text }}
+						<!--文字-->
+						<p class="message" v-if="item.lastMsgType==0">
+							{{ item.lastMsgContent }}
+						</p>
+						<!--图片-->
+						<p class="message" v-if="item.lastMsgType==1">
+							图片
+						</p>
+						<!--图片-->
+						<p class="message" v-if="item.lastMsgType==3">
+							语音
+						</p>
+						<!--图片-->
+						<p class="message" v-if="item.lastMsgType==902">
+							机器发送了预约消息
 						</p>
 					</div>
 
 					<div class="status">
-						<p class="date">{{ item.createTime }}</p>
+						<p class="date">{{ item.msgTime }}</p>
 					</div>
 				</div>
 
@@ -54,7 +67,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, nextTick, ref } from "vue";
+import { computed, nextTick, ref,onMounted } from "vue";
 import { useChat } from "../hooks";
 import { useStore } from "../store";
 import { Refresh, Plus } from "@element-plus/icons-vue";
@@ -62,10 +75,43 @@ import { Chat } from "../types";
 import { useBrowser, useCool } from "/@/cool";
 import { useDialog } from "@cool-vue/crud";
 
+
+
 const { browser } = useBrowser();
 const { chat } = useChat();
 const { session, message } = useStore();
-const { refs, setRefs } = useCool();
+const { refs, setRefs,mitt } = useCool();
+
+
+
+// 监听新消息
+onMounted(() => {
+	mitt.on("chat-message",msg=>{
+
+		// 当前选中的会话消息
+		let selToUserId=session?.value.toUserId;
+		// 消息发送者
+		let fromUserId=msg.fromUserId;
+
+
+		// 当前选中的不等于发送者
+		if(selToUserId!=fromUserId){
+			session?.list?.forEach(e=>{
+				let msgUserId=e.toUserId;
+				if(fromUserId==msgUserId){
+					e.notReadCount=e.notReadCount+1;
+					e.lastMsgContent=msg.message;
+					e.lastMsgType=msg.msgType;
+				}
+			});
+		}
+
+
+
+
+	});
+});
+
 
 useDialog({
 	onFullscreen() {
@@ -79,7 +125,9 @@ useDialog({
 const keyWord = ref("");
 
 // 过滤列表
-const list = computed(() => session?.list.filter((e) => e.nickName?.includes(keyWord.value)) || []);
+const list = computed(() => session?.list?.filter((e) => e.nickName?.includes(keyWord.value)) || []);
+
+
 
 // 会话详情
 async function toDetail(item: Chat.Session) {
@@ -87,8 +135,14 @@ async function toDetail(item: Chat.Session) {
 		chat.expand(false);
 	}
 	session.set(item);
-	await message.get({ page: 1 });
-	chat.scrollToBottom();
+
+	await message.get({ page: 1 ,uid: item.toUserId});
+
+	// 调用刷新未读数
+	mitt.emit("refreshUnCount");
+
+
+
 }
 </script>
 

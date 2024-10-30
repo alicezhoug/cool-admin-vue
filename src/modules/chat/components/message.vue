@@ -4,26 +4,21 @@
 		<div class="head">
 			<template v-if="session?.value">
 				<div class="avatar">
-					<cl-avatar :size="30" shape="square" :src="session?.value.avatar" />
+					<cl-avatar :size="30" shape="square" :src="session?.value.avatarUrl" />
 				</div>
 				<span class="name">与“{{ session?.value.nickName }}”聊天中</span>
 			</template>
 		</div>
 
 		<!-- 消息列表 -->
-		<el-scrollbar class="list">
-			<ul>
+		<el-scrollbar class="list" @scroll="scroll" ref="scrollContainerRef">
+			<ul ref="scrollContentRef">
 				<li v-for="(item, index) in list" :key="index">
-					<div
-						class="item"
-						:class="{
-							'is-right': item.isMy
-						}"
-					>
+					<div class="date" v-if="item.msgType == 3">{{item.msgContent}}</div>
+					<div v-else class="item" :class="{'is-right': item.userType=='self'}">
 						<div class="avatar">
-							<cl-avatar :size="36" shape="square" :src="item.avatar" />
+							<cl-avatar :size="36" shape="square" :src="item.avatarUrl" />
 						</div>
-
 						<div
 							class="det"
 							@contextmenu="
@@ -37,19 +32,40 @@
 							</div>
 							<div class="content">
 								<!-- 文本 -->
-								<div class="is-text" v-if="item.contentType == 0">
-									<span>{{ item.content.text }}</span>
+								<div class="is-text" v-if="item.msgType == 0">
+									<span>{{ item.msgContent }}</span>
 								</div>
 
 								<!-- 图片 -->
-								<div class="is-image" v-else-if="item.contentType == 1">
+								<div class="is-image" v-else-if="item.msgType == 1">
 									<el-image
-										:src="item.content.imageUrl"
+										:src="item.msgContent"
 										:preview-src-list="previewUrls"
 										:initial-index="item._index"
 										scroll-container=".chat-message .list"
 									/>
 								</div>
+
+								<!-- 预约消息 -->
+								<div class="is-image" v-else-if="item.msgType == 902">
+									<el-image
+										:src="item.msgContent.image"
+										:preview-src-list="previewUrls"
+										:initial-index="item._index"
+										scroll-container=".chat-message .list"
+									/>
+									<div class="is-text">
+										<li>
+											<el-link/>
+											<span>[系统]->询问预约时间</span>
+										</li>
+
+
+									</div>
+
+								</div>
+
+
 							</div>
 						</div>
 					</div>
@@ -100,7 +116,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from "vue";
+import { computed, ref,onMounted, nextTick } from "vue";
 import { useChat } from "../hooks";
 import { useStore } from "../store";
 import { PictureFilled, VideoCamera, Microphone, Location } from "@element-plus/icons-vue";
@@ -109,50 +125,133 @@ import { ContextMenu } from "@cool-vue/crud";
 import { useClipboard } from "@vueuse/core";
 import { Chat } from "../types";
 import { ElMessage } from "element-plus";
+import { useCool } from "/@/cool";
+
 
 const { user } = useBase();
 const { chat } = useChat();
 const { message, session } = useStore();
+const { mitt } = useCool();
+
 const { copy } = useClipboard();
 
 const value = ref("");
 
+const scrollContainerRef: any = ref(null);
+const scrollContentRef:any = ref(null);
+
+
+
+// 监听刷新事件
+onMounted(() => {
+
+
+
+	mitt.on("chat-message",msg=>{
+
+
+		// 当前选中的会话消息
+		let selToUserId=session?.value.toUserId;
+		// 消息发送者
+		let fromUserId=msg.fromUserId;
+		let msgType=msg.msgType;
+		let message=msg.message;
+
+		console.log("在message收到消息:"+msg)
+
+
+		//--判断选中的用户是否与消息发送者相同
+		if(selToUserId==fromUserId){
+
+			let contentType=0;
+			//--文字--
+			if(msgType==0){
+				contentType=0;
+			}
+			//--图片--
+			if(msgType==1){
+				contentType=1;
+			}
+			//--显示消息到聊天窗口--
+			chat.append({
+				contentType: contentType,
+				content: {
+					text: message
+				},
+				userType:"friend",
+				toUserId: session.value?.toUserId,
+				avatarUrl: session.value?.toAvatarUrl,
+				nickName: session.value?.toNickName,
+			});
+
+		}
+		scrollToBottom();
+
+	});
+
+});
+
+
+
+const scroll = ({ scrollTop}) => {
+  //划到顶部加载数据
+  if(scrollTop==0){
+	let page=message.pagination.page+1;
+	message.get({page:page,uid: session?.value.toUserId})
+  }
+}
 // 过滤列表
 const list = computed(() => {
 	let n = 0;
 
 	return message.list.map((e) => {
-		if (e.contentType == 1) {
+		//图片
+		if (e.msgType == 1) {
 			e._index = n++;
 		}
 
-		// 是否自己发的消息
-		e.isMy = e.fromId == user.info?.id;
-
 		return e;
 	});
+
 });
 
 // 预览图片地址
 const previewUrls = computed(() =>
 	message.list
-		.filter((e) => e.contentType == 1)
-		.map((e) => e.content?.imageUrl)
+		.filter((e) => e.msgType == 1)
+		.map((e) => e.msgContent)
 		.filter(Boolean)
 );
 
+
+function scrollToBottom(){
+	nextTick(() => {
+		if (scrollContainerRef.value != null && scrollContentRef.value!=null) {
+			scrollContainerRef.value!.setScrollTop(scrollContentRef.value!.clientHeight)
+    	}
+    })
+
+}
 // 文本消息
 function onTextSend() {
+
+
 	chat.send(
 		{
 			contentType: 0,
 			content: {
 				text: value.value
-			}
+			},
+			userType:"self",
+			toUserId: session.value?.toUserId,
+			avatarUrl: session.value?.fromAvatarUrl,
+			nickName: session.value?.fromNickName,
 		},
 		true
 	);
 	value.value = "";
+
+	scrollToBottom();
 }
 
 // 图片消息
@@ -162,11 +261,13 @@ function onImageSend(res: any) {
 			contentType: 1,
 			content: {
 				imageUrl: res.url
-			}
+			},
+			userType:"friend"
 		},
 		true
 	);
 	value.value = "";
+	scrollToBottom();
 }
 
 // 右键菜单
@@ -225,7 +326,6 @@ function onContextMenu(e: Event, item: Chat.Message) {
 	.list {
 		flex: 1;
 		background-color: #f7f7f7;
-
 		ul {
 			& > li {
 				list-style: none;

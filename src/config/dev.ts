@@ -4,7 +4,8 @@ import { proxy } from "./proxy";
 export default {
 	// 根地址
 	host: proxy["/dev/"].target,
-
+	// ws
+	ws: proxy["/devws/"].target,
 	// 请求地址
 	get baseUrl() {
 		let proxy = getUrlParam("proxy");
@@ -14,7 +15,7 @@ export default {
 		} else {
 			proxy = storage.get("proxy") || "dev";
 		}
-
 		return `/${proxy}`;
+
 	}
 };

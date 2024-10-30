@@ -3,19 +3,33 @@
 		<cl-row>
 			<!-- 刷新按钮 -->
 			<cl-refresh-btn />
+
+			<!-- 新增按钮 -->
+			<cl-add-btn />
+
 			<!-- 删除按钮 -->
 			<cl-multi-delete-btn />
 			<!-- 登录方式 -->
 			<cl-filter label="登录方式">
-				<cl-select :options="options.loginType" prop="loginType" :width="120" />
+				<cl-select   :options="dict.get('loginType')" prop="loginType" :width="120" />
 			</cl-filter>
-			<!-- 性别 -->
+			<!-- 性别
 			<cl-filter label="性别">
-				<cl-select :options="options.gender" prop="gender" :width="120" />
+				<cl-select :options="dict.get('gender')" prop="gender" :width="120" />
 			</cl-filter>
-			<!-- 状态 -->
+			-->
+			<!--
 			<cl-filter label="状态">
-				<cl-select :options="options.status" prop="status" :width="120" />
+				<cl-select :options="dict.get('userStatus')" prop="status" :width="120" />
+			</cl-filter>
+			 -->
+			<!-- 类型-->
+			<cl-filter label="状态">
+				<cl-select :options="options.onlines" prop="online" :width="120" />
+			</cl-filter>
+			<!-- 类型-->
+			<cl-filter label="类型">
+				<cl-select :options="dict.get('userSortation')" prop="sortation" :width="120" />
 			</cl-filter>
 			<cl-flex1 />
 			<!-- 关键字搜索 -->
@@ -42,62 +56,28 @@
 import { useCrud, useTable, useUpsert } from "@cool-vue/crud";
 import { useCool } from "/@/cool";
 import { reactive } from "vue";
+import { useDict } from "/$/dict";
 
 const { service } = useCool();
 
-// 数据选项
-const options = reactive({
-	loginType: [
+const options=reactive({
+	onlines:[
 		{
-			label: "小程序",
-			value: 0,
-			type: "danger"
-		},
-		{
-			label: "公众号",
-			value: 1,
+			label:"在线",
+			value:true,
 			type: "success"
 		},
 		{
-			label: "H5",
-			value: 2
-		}
-	],
-	gender: [
-		{
-			label: "未知",
-			value: 0,
-			type: "info"
-		},
-		{
-			label: "男",
-			value: 1,
-			type: "success"
-		},
-		{
-			label: "女",
-			value: 2,
-			type: "danger"
-		}
-	],
-	status: [
-		{
-			label: "禁用",
-			value: 0,
-			type: "danger"
-		},
-		{
-			label: "正常",
-			value: 1,
-			type: "success"
-		},
-		{
-			label: "已注销",
-			value: 2,
-			type: "warning"
+			label:"离线",
+			value:false,
+			type:"danger"
 		}
 	]
 });
+
+const { dict } = useDict();
+
+
 
 // cl-table
 const Table = useTable({
@@ -120,33 +100,82 @@ const Table = useTable({
 			}
 		},
 		{
+			label: "用户类型",
+			prop: "sortation",
+			dict: dict.get("userSortation"),
+			minWidth: 120
+		},
+		{
+			label: "是否在线",
+			prop: "online",
+			dict: options.onlines,
+			minWidth: 120
+		},
+		{
+			label: "IP地址",
+			prop: "ipAddr",
+			minWidth: 120
+		},
+		{
+			label: "省份(IP)",
+			prop: "ipProvinceLabel",
+			minWidth: 100
+		},
+		{
+			label: "城市(IP)",
+			prop: "ipCityLabel",
+			minWidth: 100
+		},
+		{
+			label: "国家(IP)",
+			prop: "ipCountryLabel",
+			minWidth: 100
+		},
+		{
 			label: "手机",
 			prop: "phone",
 			minWidth: 120
 		},
 		{
+			label: "登录帐号",
+			prop: "username",
+			minWidth: 120
+		},
+
+		{
 			label: "性别",
 			prop: "gender",
-			dict: options.gender,
+			dict: dict.get("gender"),
 			minWidth: 100
 		},
 		{
 			label: "登录方式",
 			prop: "loginType",
-			dict: options.loginType,
+			dict: dict.get("loginType"),
+			minWidth: 100
+		},
+		{
+			label: "职业",
+			prop: "career",
+			dict: dict.get("career"),
 			minWidth: 100
 		},
 		{
 			label: "状态",
 			prop: "status",
 			minWidth: 120,
-			dict: options.status
+			dict: dict.get('userStatus')
 		},
 		{
 			label: "创建时间",
 			prop: "createTime",
 			sortable: "desc",
 			minWidth: 170
+		},
+		{
+			label: "UID",
+			prop: "id",
+			minWidth: 150
 		},
 		{
 			label: "操作",
@@ -171,11 +200,19 @@ const Upsert = useUpsert({
 			prop: "nickName",
 			label: "昵称",
 			component: { name: "el-input" },
+			span: 12,
 			required: true
+		},
+		{
+			label: "用户分类",
+			prop: "sortation",
+			span: 12,
+			component: { name: "el-select",options:dict.get('userSortation'), props: { clearable: true } }
 		},
 		{
 			prop: "phone",
 			label: "手机号",
+			span: 12,
 			component: {
 				name: "el-input",
 				props: {
@@ -184,13 +221,51 @@ const Upsert = useUpsert({
 			}
 		},
 		{
+			label: "出生日期",
+			prop: "birthday",
+			span: 12,
+			component: {
+				name: "el-date-picker"
+			}
+		},
+		{
+			prop: "username",
+			label: "登录帐号",
+			span: 12,
+			component: {
+				name: "el-input",
+				props: {
+					maxlength: 20
+				}
+			}
+		},
+		{
+			label: "登录密码",
+			prop: "password",
+			span: 12,
+			component: {
+				name: "el-input",
+				props: {
+					maxlength: 20,
+					type:"password"
+				}
+			}
+		},
+		{
 			prop: "gender",
 			label: "性别",
+			span: 12,
 			value: 1,
 			component: {
-				name: "el-radio-group",
-				options: options.gender
+				name: "el-select",
+				options: dict.get('gender')
 			}
+		},
+		{
+			label: "职业",
+			prop: "career",
+			span: 12,
+			component: { name: "el-select",options:dict.get('career'), props: { clearable: true } }
 		},
 		{
 			prop: "status",
@@ -198,7 +273,7 @@ const Upsert = useUpsert({
 			value: 1,
 			component: {
 				name: "el-radio-group",
-				options: options.status
+				options: dict.get('userStatus')
 			}
 		}
 	]

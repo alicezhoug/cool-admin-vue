@@ -121,6 +121,11 @@ const Table = useTable({
 			}
 		},
 		{
+			prop: "clientUserId",
+			label: "app用户ID",
+			minWidth: 150
+		},
+		{
 			prop: "status",
 			label: "状态",
 			minWidth: 120,
@@ -165,7 +170,8 @@ const Upsert = useUpsert({
 			component: {
 				name: "cl-upload",
 				props: {
-					text: "选择头像"
+					text: "选择头像",
+
 				}
 			}
 		},
@@ -220,6 +226,7 @@ const Upsert = useUpsert({
 		{
 			prop: "roleIdList",
 			label: "角色",
+			span: 12,
 			value: [],
 			required: true,
 			component: {
@@ -229,6 +236,15 @@ const Upsert = useUpsert({
 					multiple: true,
 					"multiple-limit": 3
 				}
+			}
+		},
+		{
+			prop: "clientUserId",
+			label: "App用户ID",
+			required: false,
+			span: 12,
+			component: {
+				name: "el-input"
 			}
 		},
 		{

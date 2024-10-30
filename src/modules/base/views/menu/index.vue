@@ -446,5 +446,5 @@ function addPermission({ id }: Item) {
 	});
 }
 
-mitt.on("helper.createMenu", refresh);
+("helper.createMenu", refresh);
 </script>

@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import { service } from "/@/cool";
+
 
 export const useMessageStore = defineStore("chat-message", () => {
 	// 加载状态
@@ -16,21 +17,43 @@ export const useMessageStore = defineStore("chat-message", () => {
 		size: 20
 	});
 
+
 	// 获取列表
 	async function get(params?: any) {
-		loading.value = true;
 
+
+
+
+		if(!params || !params?.uid){
+			return;
+		}
+		if(!params?.page){
+			params.page=1;
+		}
 		// 清空
 		if (params?.page == 1) {
 			list.value = [];
 		}
 
+		loading.value = true;
+
+
 		// 发送请求
-		await service.chat.message.page(params).then((res) => {
-			list.value = res.list.map((e) => {
+		await service.imchat.detail.pageExtend(params).then((res) => {
+			/*list.value = res.list.map((e) => {
 				e.content = JSON.parse(e.content);
 				return e;
-			});
+			});*/
+			if(params.page==1){
+				list.value=res.list;
+			}else{
+
+				res.list.reverse().map((e)=>{
+					list.value.unshift(e);
+				});
+			}
+
+
 			pagination.value = res.pagination;
 		});
 

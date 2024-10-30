@@ -1,5 +1,8 @@
 <template>
+	<!--
 	<el-badge is-dot v-if="!browser.isMini">
+		-->
+	<el-badge is-dot v-if="false">
 		<div class="btn" @click="toCode">
 			<span>AI 极速编码</span>
 		</div>

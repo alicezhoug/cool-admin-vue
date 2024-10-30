@@ -49,23 +49,24 @@
 </template>
 
 <script lang="ts" name="cl-chat" setup>
-import { nextTick, provide, ref } from "vue";
+import { nextTick, provide, ref,onMounted } from "vue";
 import dayjs from "dayjs";
-import { useCool, config, module, useBrowser } from "/@/cool";
+import { useCool, module, useBrowser } from "/@/cool";
+import {config } from "/@/config/index";
 import { useBase } from "/$/base";
 import { Notebook, ArrowLeft } from "@element-plus/icons-vue";
 import { debounce } from "lodash-es";
-// import io from "socket.io-client";
+import io from "socket.io-client";
 import { Socket } from "socket.io-client";
 import ChatMessage from "./message.vue";
 import ChatSession from "./session.vue";
 import { Chat } from "../types";
 import { useStore } from "../store";
 
-// const { mitt } = useCool();
+const { mitt } = useCool();
 const { browser, onScreenChange } = useBrowser();
 
-// 缓存
+
 const { session, message } = useStore();
 
 // 缓存
@@ -81,43 +82,53 @@ const visible = ref(false);
 const isExpand = ref(true);
 
 // 未读消息
-const unCount = ref(parseInt(String(Math.random() * 100)));
+const unCount = ref(0);
 
 // Socket
 let socket: Socket;
 
+// 监听刷新事件
+onMounted(() => {
+	mitt.on("refreshUnCount",msg=>{
+		refreshUnCount();
+	});
+});
 // 连接
 function connect() {
 	refresh();
 
-	// if (!socket) {
-	// 	socket = io(config.host + options.path, {
-	// 		auth: {
-	// 			token: user.token
-	// 		}
-	// 	});
+	 if (!socket) {
+	 	socket = io(config.ws, {
+			query: {
+			   "Authorization":user.token,
+			},
+			transports: ['websocket']
 
-	// 	socket.on("connect", () => {
-	// 		console.log(`connect ${user.info?.nickName}`);
+		});
 
-	// 		// 监听消息
-	// 		socket.on("message", (msg) => {
-	// 			console.log(msg);
-	// 			mitt("chat-message", msg);
-	// 		});
+	 	socket.on("connect", () => {
+	 		console.log(`connect ${user.info?.nickName}`);
 
-	// 		refresh();
-	// 	});
+	 		// 监听消息
+	 		socket.on("chat", (msg) => {
+				console.log("监听到消息："+msg)
 
-	// 	socket.on("disconnect", (err) => {
-	// 		console.error(err);
-	// 	});
-	// }
+	 			mitt.emit("chat-message", msg);
+
+				refreshUnCount();
+			});
+	 	});
+
+	 	socket.on("disconnect", (err) => {
+	 		console.error(err);
+	 	});
+	}
 }
 
 // 打开
 function open() {
 	visible.value = true;
+
 	connect();
 }
 
@@ -133,43 +144,53 @@ function expand(value?: boolean) {
 
 // 发送消息
 function send(data: Chat.Message, isAppend?: boolean) {
-	// socket.emit("message", {});
+	socket.emit("chat", {
+		toUserId: session.value?.toUserId,
+		message: data.content.text,
+		msgType: data.contentType
+	},(response)=>{
+		console.log(response)
+	});
 
 	if (isAppend) {
 		append(data);
 	}
 }
 
+
 // 追加消息
 function append(data: Chat.Message) {
 	message.list.push({
-		fromId: user.info?.id,
-		toId: session.value?.userId,
-		avatar: user.info?.headImg,
-		nickName: user.info?.nickName,
+		toUserId: data.toUserId,
+		avatarUrl: data.fromAvatarUrl,
+		nickName: data.fromNickName,
+		msgContent:data.content.text,
+		msgType:data.contentType,
+		userType:data.userType,
 		createTime: dayjs().format("YYYY-MM-DD HH:mm:ss"),
 		...data
 	});
 
-	scrollToBottom();
-}
 
-// 滚动到底部
-const scrollToBottom = debounce(() => {
-	nextTick(() => {
-		const box = document.querySelector(".cl-chat .chat-message .list");
-		box?.scroll({
-			top: 100000 + Math.random(),
-			behavior: "smooth"
-		});
-	});
-}, 300);
+}
 
 // 刷新
 async function refresh() {
 	await session.get();
-	await message.get();
-	scrollToBottom();
+	let toUserId=session.value?.toUserId;
+	if(toUserId){
+		await message.get({uid:toUserId});
+	}
+
+
+	refreshUnCount();
+
+}
+// 刷新未读消息数
+async function refreshUnCount() {
+	//
+	await session.loadNotReadCount();
+	unCount.value=session.notReadCount;
 }
 
 provide("chat", {
@@ -178,8 +199,8 @@ provide("chat", {
 	},
 	send,
 	append,
-	expand,
-	scrollToBottom
+	expand
+
 });
 
 // 监听屏幕变化

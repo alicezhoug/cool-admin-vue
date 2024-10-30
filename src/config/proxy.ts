@@ -5,9 +5,19 @@ export const proxy = {
 		rewrite: (path: string) => path.replace(/^\/dev/, "")
 	},
 
-	"/prod/": {
-		target: "https://show.cool-admin.com",
+	"/devws/": {
+		target: "ws://127.0.0.1:9090",
 		changeOrigin: true,
-		rewrite: (path: string) => path.replace(/^\/prod/, "/api")
+		rewrite: (path: string) => path.replace(/^\/devws/, "")
+	},
+	"/prod/": {
+		target: "https://ym.yuelike.com",
+		changeOrigin: true,
+		rewrite: (path: string) => path.replace(/^\/prod/, "")
+	},
+	"/prodws/": {
+		target: "wss://socket.yuelike.com",
+		changeOrigin: true,
+		rewrite: (path: string) => path.replace(/^\/prodws/, "")
 	}
 };
