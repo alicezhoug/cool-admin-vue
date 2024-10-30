@@ -1,5 +1,5 @@
 <template>
-	<div class="chat-message" v-loading="message?.loading" element-loading-text="消息列表加载中">
+	<div v-loading="message?.loading" class="chat-message" element-loading-text="消息列表加载中">
 		<!-- 头部 -->
 		<div class="head">
 			<template v-if="session?.value">
@@ -22,7 +22,7 @@
 						<div
 							class="det"
 							@contextmenu="
-								(e) => {
+								e => {
 									onContextMenu(e, item);
 								}
 							"
@@ -32,12 +32,21 @@
 							</div>
 							<div class="content">
 								<!-- 文本 -->
+<<<<<<< HEAD
 								<div class="is-text" v-if="item.msgType == 0">
 									<span>{{ item.msgContent }}</span>
 								</div>
 
 								<!-- 图片 -->
 								<div class="is-image" v-else-if="item.msgType == 1">
+=======
+								<div v-if="item.contentType == 0" class="is-text">
+									<span>{{ item.content.text }}</span>
+								</div>
+
+								<!-- 图片 -->
+								<div v-else-if="item.contentType == 1" class="is-image">
+>>>>>>> 8ed1e16cfd9f69d277b4c1e3cb95e74f1b2f84cc
 									<el-image
 										:src="item.msgContent"
 										:preview-src-list="previewUrls"
@@ -77,7 +86,7 @@
 		<div class="footer">
 			<div class="tools">
 				<ul>
-					<cl-upload @success="onImageSend" :show-file-list="false">
+					<cl-upload :show-file-list="false" @success="onImageSend">
 						<li>
 							<el-icon><picture-filled /></el-icon>
 						</li>
@@ -109,13 +118,14 @@
 					}"
 					placeholder="输入内容"
 				></el-input>
-				<el-button type="success" @click="onTextSend" :disabled="!value">发送</el-button>
+				<el-button type="success" :disabled="!value" @click="onTextSend">发送</el-button>
 			</div>
 		</div>
 	</div>
 </template>
 
 <script lang="ts" setup>
+<<<<<<< HEAD
 import { computed, ref,onMounted, nextTick } from "vue";
 import { useChat } from "../hooks";
 import { useStore } from "../store";
@@ -127,6 +137,17 @@ import { Chat } from "../types";
 import { ElMessage } from "element-plus";
 import { useCool } from "/@/cool";
 
+=======
+import { computed, ref } from 'vue';
+import { useChat } from '../hooks';
+import { useStore } from '../store';
+import { PictureFilled, VideoCamera, Microphone, Location } from '@element-plus/icons-vue';
+import { useBase } from '/$/base';
+import { ContextMenu } from '@cool-vue/crud';
+import { useClipboard } from '@vueuse/core';
+import { Chat } from '../types';
+import { ElMessage } from 'element-plus';
+>>>>>>> 8ed1e16cfd9f69d277b4c1e3cb95e74f1b2f84cc
 
 const { user } = useBase();
 const { chat } = useChat();
@@ -135,7 +156,7 @@ const { mitt } = useCool();
 
 const { copy } = useClipboard();
 
-const value = ref("");
+const value = ref('');
 
 const scrollContainerRef: any = ref(null);
 const scrollContentRef:any = ref(null);
@@ -204,9 +225,14 @@ const scroll = ({ scrollTop}) => {
 const list = computed(() => {
 	let n = 0;
 
+<<<<<<< HEAD
 	return message.list.map((e) => {
 		//图片
 		if (e.msgType == 1) {
+=======
+	return message.list.map(e => {
+		if (e.contentType == 1) {
+>>>>>>> 8ed1e16cfd9f69d277b4c1e3cb95e74f1b2f84cc
 			e._index = n++;
 		}
 
@@ -218,8 +244,13 @@ const list = computed(() => {
 // 预览图片地址
 const previewUrls = computed(() =>
 	message.list
+<<<<<<< HEAD
 		.filter((e) => e.msgType == 1)
 		.map((e) => e.msgContent)
+=======
+		.filter(e => e.contentType == 1)
+		.map(e => e.content?.imageUrl)
+>>>>>>> 8ed1e16cfd9f69d277b4c1e3cb95e74f1b2f84cc
 		.filter(Boolean)
 );
 
@@ -249,9 +280,13 @@ function onTextSend() {
 		},
 		true
 	);
+<<<<<<< HEAD
 	value.value = "";
 
 	scrollToBottom();
+=======
+	value.value = '';
+>>>>>>> 8ed1e16cfd9f69d277b4c1e3cb95e74f1b2f84cc
 }
 
 // 图片消息
@@ -266,30 +301,34 @@ function onImageSend(res: any) {
 		},
 		true
 	);
+<<<<<<< HEAD
 	value.value = "";
 	scrollToBottom();
+=======
+	value.value = '';
+>>>>>>> 8ed1e16cfd9f69d277b4c1e3cb95e74f1b2f84cc
 }
 
 // 右键菜单
 function onContextMenu(e: Event, item: Chat.Message) {
 	ContextMenu.open(e, {
 		hover: {
-			target: "content"
+			target: 'content'
 		},
 		list: [
 			{
-				label: "复制",
+				label: '复制',
 				callback(done) {
-					copy(item.content.text || "");
-					ElMessage.success("复制成功");
+					copy(item.content.text || '');
+					ElMessage.success('复制成功');
 					done();
 				}
 			},
 			{
-				label: "转发"
+				label: '转发'
 			},
 			{
-				label: "删除"
+				label: '删除'
 			}
 		]
 	});

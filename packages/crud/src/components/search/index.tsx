@@ -1,6 +1,17 @@
 import { useConfig, useCore, useForm } from "../../hooks";
-import { isEmpty } from "lodash-es";
-import { onMounted, PropType, defineComponent, ref, h, reactive, inject, mergeProps } from "vue";
+import { isEmpty, keys } from "lodash-es";
+import {
+	onMounted,
+	PropType,
+	defineComponent,
+	ref,
+	h,
+	reactive,
+	inject,
+	mergeProps,
+	watch,
+	watchEffect
+} from "vue";
 import { useApi } from "../form/helper";
 
 export default defineComponent({
@@ -115,6 +126,7 @@ export default defineComponent({
 		expose({
 			search,
 			reset,
+			Form,
 			...useApi({ Form })
 		});
 
@@ -129,6 +141,9 @@ export default defineComponent({
 				on: {
 					open(data) {
 						config.onLoad?.(data);
+					},
+					change(data, prop) {
+						config.onChange?.(data, prop);
 					}
 				}
 			});

@@ -5,11 +5,11 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, reactive } from "vue";
-import { parsePx } from "/@/cool/utils";
+import { computed, defineComponent, reactive } from 'vue';
+import { parsePx } from '/@/cool/utils';
 
 export default defineComponent({
-	name: "cl-svg",
+	name: 'cl-svg',
 
 	props: {
 		name: String,
@@ -20,12 +20,13 @@ export default defineComponent({
 
 	setup(props) {
 		const style = reactive({
-			fontSize: parsePx(props.size!)
+			fontSize: parsePx(props.size!),
+			fill: props.color
 		});
 
 		const iconName = computed(() => `#icon-${props.name}`);
 		const svgClass = computed(() => {
-			return ["cl-svg", `cl-svg__${props.name}`, String(props.className || "")];
+			return ['cl-svg', `cl-svg__${props.name}`, String(props.className || '')];
 		});
 
 		return {

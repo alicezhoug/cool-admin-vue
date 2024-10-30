@@ -21,10 +21,10 @@
 					<cl-table ref="Table" row-key="id" @row-click="onRowClick">
 						<template #slot-btn="{ scope }">
 							<el-button
+								v-permission="service.dict.info.permission.add"
 								text
 								bg
 								type="success"
-								v-permission="service.dict.info.permission.add"
 								@click="append(scope.row)"
 								>新增</el-button
 							>
@@ -64,6 +64,7 @@
 </template>
 
 <script lang="ts" name="dict-list" setup>
+<<<<<<< HEAD
 import { setFocus, useCrud, useTable, useUpsert } from "@cool-vue/crud";
 import { useCool } from "/@/cool";
 import { computed,reactive } from "vue";
@@ -72,6 +73,15 @@ import { deepTree } from "/@/cool/utils";
 import { cloneDeep } from "lodash-es";
 import { useDict } from "../index";
 import { useViewGroup } from "/@/plugins/view";
+=======
+import { setFocus, useCrud, useTable, useUpsert } from '@cool-vue/crud';
+import { useCool } from '/@/cool';
+import { computed } from 'vue';
+import { deepTree } from '/@/cool/utils';
+import { cloneDeep } from 'lodash-es';
+import { useDict } from '../index';
+import { useViewGroup } from '/@/plugins/view';
+>>>>>>> 8ed1e16cfd9f69d277b4c1e3cb95e74f1b2f84cc
 
 const { service } = useCool();
 const { dict } = useDict();
@@ -94,8 +104,8 @@ const options=reactive({
 
 
 const { ViewGroup } = useViewGroup({
-	label: "类型",
-	title: "字典列表",
+	label: '类型',
+	title: '字典列表',
 	service: service.dict.type,
 	onSelect(item) {
 		refresh({
@@ -105,16 +115,16 @@ const { ViewGroup } = useViewGroup({
 	},
 	onEdit() {
 		return {
-			width: "500px",
+			width: '500px',
 			props: {
-				labelWidth: "60px"
+				labelWidth: '60px'
 			},
 			items: [
 				{
-					label: "名称",
-					prop: "name",
+					label: '名称',
+					prop: 'name',
 					component: {
-						name: "el-input",
+						name: 'el-input',
 						props: {
 							maxlength: 20
 						}
@@ -122,10 +132,10 @@ const { ViewGroup } = useViewGroup({
 					required: true
 				},
 				{
-					label: "Key",
-					prop: "key",
+					label: 'Key',
+					prop: 'key',
 					component: {
-						name: "el-input",
+						name: 'el-input',
 						props: {
 							maxlength: 20
 						}
@@ -150,23 +160,23 @@ const { ViewGroup } = useViewGroup({
 // cl-upsert
 const Upsert = useUpsert({
 	dialog: {
-		width: "600px"
+		width: '600px'
 	},
 	props: {
-		labelWidth: "100px"
+		labelWidth: '100px'
 	},
 	items: [
 		{
-			label: "上级节点",
-			prop: "parentId",
+			label: '上级节点',
+			prop: 'parentId',
 			component: {
-				name: "el-tree-select",
+				name: 'el-tree-select',
 				props: {
 					data: computed(() => {
 						const data = cloneDeep(Table.value?.data);
 
 						function deep(d: any, f: boolean) {
-							if (d.id && d.id == Upsert.value?.getForm("id")) {
+							if (d.id && d.id == Upsert.value?.getForm('id')) {
 								f = true;
 							}
 
@@ -186,36 +196,37 @@ const Upsert = useUpsert({
 						return data;
 					}),
 					props: {
-						label: "name",
-						value: "id",
-						children: "children",
-						disabled: "disabled"
+						label: 'name',
+						value: 'id',
+						children: 'children',
+						disabled: 'disabled'
 					},
 					clearable: true,
 					filterable: true,
-					"default-expand-all": true,
-					"check-strictly": true
+					'default-expand-all': true,
+					'check-strictly': true
 				}
 			}
 		},
 		{
-			label: "名称",
-			prop: "name",
+			label: '名称',
+			prop: 'name',
 			required: true,
-			component: { name: "el-input" }
+			component: { name: 'el-input' }
 		},
 		{
-			label: "值",
-			prop: "value",
-			component: { name: "slot-value" }
+			label: '值',
+			prop: 'value',
+			component: { name: 'slot-value' }
 		},
 		{
-			label: "排序",
-			prop: "orderNum",
+			label: '排序',
+			prop: 'orderNum',
 			value: 1,
-			component: { name: "el-input-number", props: { min: 1 } }
+			component: { name: 'el-input-number', props: { min: 1 } }
 		},
 		{
+<<<<<<< HEAD
 			prop: "stop",
 			label: "状态",
 			value: false,
@@ -228,6 +239,14 @@ const Upsert = useUpsert({
 			label: "备注",
 			prop: "remark",
 			component: { name: "el-input", props: { type: "textarea", rows: 4 } }
+=======
+			label: '备注',
+			prop: 'remark',
+			component: {
+				name: 'el-input',
+				props: { type: 'textarea', rows: 4 }
+			}
+>>>>>>> 8ed1e16cfd9f69d277b4c1e3cb95e74f1b2f84cc
 		}
 	],
 	onSubmit(data, { next }) {
@@ -236,16 +255,16 @@ const Upsert = useUpsert({
 			typeId: ViewGroup.value?.selected?.id
 		});
 	},
-	plugins: [setFocus("name")]
+	plugins: [setFocus('name')]
 });
 
 // cl-table
 const Table = useTable({
 	contextMenu: [
-		"refresh",
-		(row) => {
+		'refresh',
+		row => {
 			return {
-				label: "新增",
+				label: '新增',
 				hidden: !service.dict.info._permission?.add,
 				callback(done) {
 					append(row);
@@ -253,15 +272,16 @@ const Table = useTable({
 				}
 			};
 		},
-		"edit",
-		"delete",
-		"order-asc",
-		"order-desc"
+		'edit',
+		'delete',
+		'order-asc',
+		'order-desc'
 	],
 	columns: [
 		{
-			type: "selection"
+			type: 'selection'
 		},
+<<<<<<< HEAD
 		{ label: "名称", prop: "name", align: "left", minWidth: 200 },
 		{ label: "ID", prop: "id", minWidth: 120,hidden:true },
 		{ label: "值", prop: "value", minWidth: 200, showOverflowTooltip: true },
@@ -275,10 +295,45 @@ const Table = useTable({
 		},
 		{ label: "创建时间", prop: "createTime", sortable: "custom", minWidth: 170 },
 		{ label: "更新时间", prop: "updateTime", sortable: "custom", minWidth: 170 },
+=======
+		{ label: '名称', prop: 'name', align: 'left', minWidth: 200 },
+		{ label: 'ID', prop: 'id', minWidth: 120 },
+>>>>>>> 8ed1e16cfd9f69d277b4c1e3cb95e74f1b2f84cc
 		{
-			type: "op",
+			label: '值',
+			prop: 'value',
+			minWidth: 200,
+			showOverflowTooltip: true
+		},
+		{
+			label: '备注',
+			prop: 'remark',
+			showOverflowTooltip: true,
+			minWidth: 170
+		},
+		{
+			label: '排序',
+			prop: 'orderNum',
+			sortable: 'desc',
+			width: 100,
+			fixed: 'right'
+		},
+		{
+			label: '创建时间',
+			prop: 'createTime',
+			sortable: 'custom',
+			minWidth: 170
+		},
+		{
+			label: '更新时间',
+			prop: 'updateTime',
+			sortable: 'custom',
+			minWidth: 170
+		},
+		{
+			type: 'op',
 			width: 250,
-			buttons: ["slot-btn", "edit", "delete"]
+			buttons: ['slot-btn', 'edit', 'delete']
 		}
 	]
 });
@@ -293,7 +348,7 @@ const Crud = useCrud({
 				page: undefined,
 				size: undefined
 			})
-			.then((res) => {
+			.then(res => {
 				// 渲染数据
 				render(deepTree(res, params.sort));
 
@@ -325,7 +380,7 @@ function append(row: any) {
 
 // 文件选择
 function onFileConfirm(selection: any[]) {
-	Upsert.value?.setForm("value", selection[0]?.url);
+	Upsert.value?.setForm('value', selection[0]?.url);
 }
 </script>
 

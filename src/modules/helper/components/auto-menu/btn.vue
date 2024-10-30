@@ -1,8 +1,12 @@
 <template>
+<<<<<<< HEAD
 	<!--
 	<el-badge is-dot v-if="!browser.isMini">
 		-->
 	<el-badge is-dot v-if="false">
+=======
+	<el-badge v-if="!browser.isMini" is-dot>
+>>>>>>> 8ed1e16cfd9f69d277b4c1e3cb95e74f1b2f84cc
 		<div class="btn" @click="toCode">
 			<span>AI 极速编码</span>
 		</div>
@@ -10,12 +14,12 @@
 </template>
 
 <script lang="ts" name="auto-menu" setup>
-import { useCool } from "/@/cool";
+import { useCool } from '/@/cool';
 
 const { router, browser } = useCool();
 
 function toCode() {
-	router.push("/helper/ai-code");
+	router.push('/helper/ai-code');
 }
 </script>
 

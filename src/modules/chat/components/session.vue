@@ -14,12 +14,12 @@
 			</ul>
 		</div>
 
-		<div class="list" v-loading="session?.loading">
-			<el-scrollbar class="scroller" :ref="setRefs('scroller')">
+		<div v-loading="session?.loading" class="list">
+			<el-scrollbar :ref="setRefs('scroller')" class="scroller">
 				<div
-					class="item"
 					v-for="(item, index) in list"
 					:key="index"
+					class="item"
 					:class="{
 						'is-active': item.id == session?.value?.id
 					}"
@@ -67,6 +67,7 @@
 </template>
 
 <script lang="ts" setup>
+<<<<<<< HEAD
 import { computed, nextTick, ref,onMounted } from "vue";
 import { useChat } from "../hooks";
 import { useStore } from "../store";
@@ -74,6 +75,15 @@ import { Refresh, Plus } from "@element-plus/icons-vue";
 import { Chat } from "../types";
 import { useBrowser, useCool } from "/@/cool";
 import { useDialog } from "@cool-vue/crud";
+=======
+import { computed, nextTick, ref } from 'vue';
+import { useChat } from '../hooks';
+import { useStore } from '../store';
+import { Refresh, Plus } from '@element-plus/icons-vue';
+import { Chat } from '../types';
+import { useBrowser, useCool } from '/@/cool';
+import { useDialog } from '@cool-vue/crud';
+>>>>>>> 8ed1e16cfd9f69d277b4c1e3cb95e74f1b2f84cc
 
 
 
@@ -122,12 +132,16 @@ useDialog({
 });
 
 // 关键字
-const keyWord = ref("");
+const keyWord = ref('');
 
 // 过滤列表
+<<<<<<< HEAD
 const list = computed(() => session?.list?.filter((e) => e.nickName?.includes(keyWord.value)) || []);
 
 
+=======
+const list = computed(() => session?.list.filter(e => e.nickName?.includes(keyWord.value)) || []);
+>>>>>>> 8ed1e16cfd9f69d277b4c1e3cb95e74f1b2f84cc
 
 // 会话详情
 async function toDetail(item: Chat.Session) {

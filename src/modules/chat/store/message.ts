@@ -1,9 +1,17 @@
+<<<<<<< HEAD
 import { defineStore } from "pinia";
 import { onMounted, ref } from "vue";
 import { service } from "/@/cool";
 
 
 export const useMessageStore = defineStore("chat-message", () => {
+=======
+import { defineStore } from 'pinia';
+import { ref } from 'vue';
+import { service } from '/@/cool';
+
+export const useMessageStore = defineStore('chat-message', () => {
+>>>>>>> 8ed1e16cfd9f69d277b4c1e3cb95e74f1b2f84cc
 	// 加载状态
 	const loading = ref(false);
 
@@ -39,8 +47,13 @@ export const useMessageStore = defineStore("chat-message", () => {
 
 
 		// 发送请求
+<<<<<<< HEAD
 		await service.imchat.detail.pageExtend(params).then((res) => {
 			/*list.value = res.list.map((e) => {
+=======
+		await service.chat.message.page(params).then(res => {
+			list.value = res.list.map(e => {
+>>>>>>> 8ed1e16cfd9f69d277b4c1e3cb95e74f1b2f84cc
 				e.content = JSON.parse(e.content);
 				return e;
 			});*/

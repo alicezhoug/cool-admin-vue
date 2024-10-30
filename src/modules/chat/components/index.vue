@@ -37,10 +37,10 @@
 		<!-- 展开按钮 -->
 		<template #slot-expand>
 			<button class="cl-dialog__controls-icon">
-				<el-icon @click="isExpand = true" v-if="!isExpand">
+				<el-icon v-if="!isExpand" @click="isExpand = true">
 					<notebook />
 				</el-icon>
-				<el-icon @click="isExpand = false" v-else>
+				<el-icon v-else @click="isExpand = false">
 					<arrow-left />
 				</el-icon>
 			</button>
@@ -49,6 +49,7 @@
 </template>
 
 <script lang="ts" name="cl-chat" setup>
+<<<<<<< HEAD
 import { nextTick, provide, ref,onMounted } from "vue";
 import dayjs from "dayjs";
 import { useCool, module, useBrowser } from "/@/cool";
@@ -62,6 +63,20 @@ import ChatMessage from "./message.vue";
 import ChatSession from "./session.vue";
 import { Chat } from "../types";
 import { useStore } from "../store";
+=======
+import { nextTick, provide, ref } from 'vue';
+import dayjs from 'dayjs';
+import { useCool, module, useBrowser } from '/@/cool';
+import { useBase } from '/$/base';
+import { Notebook, ArrowLeft } from '@element-plus/icons-vue';
+import { debounce } from 'lodash-es';
+// import io from 'socket.io-client';
+import { Socket } from 'socket.io-client';
+import ChatMessage from './message.vue';
+import ChatSession from './session.vue';
+import type { Chat } from '../types';
+import { useStore } from '../store';
+>>>>>>> 8ed1e16cfd9f69d277b4c1e3cb95e74f1b2f84cc
 
 const { mitt } = useCool();
 const { browser, onScreenChange } = useBrowser();
@@ -73,7 +88,7 @@ const { session, message } = useStore();
 const { user } = useBase();
 
 // 模块配置
-// const { options } = module.get("chat");
+const { options } = module.get('chat');
 
 // 是否可见
 const visible = ref(false);
@@ -97,6 +112,7 @@ onMounted(() => {
 function connect() {
 	refresh();
 
+<<<<<<< HEAD
 	 if (!socket) {
 	 	socket = io(config.ws, {
 			query: {
@@ -123,6 +139,27 @@ function connect() {
 	 		console.error(err);
 	 	});
 	}
+=======
+	// if (!socket) {
+	// socket = io(config.host + options.path, {
+	// 	auth: {
+	// 		token: user.token
+	// 	}
+	// });
+	// socket.on("connect", () => {
+	// 	console.log(`connect ${user.info?.nickName}`);
+	// 	// 监听消息
+	// 	socket.on("message", (msg) => {
+	// 		console.log(msg);
+	// 		mitt("chat-message", msg);
+	// 	});
+	// 	refresh();
+	// });
+	// socket.on("disconnect", (err) => {
+	// 	console.error(err);
+	// });
+	// }
+>>>>>>> 8ed1e16cfd9f69d277b4c1e3cb95e74f1b2f84cc
 }
 
 // 打开
@@ -161,6 +198,7 @@ function send(data: Chat.Message, isAppend?: boolean) {
 // 追加消息
 function append(data: Chat.Message) {
 	message.list.push({
+<<<<<<< HEAD
 		toUserId: data.toUserId,
 		avatarUrl: data.fromAvatarUrl,
 		nickName: data.fromNickName,
@@ -168,11 +206,31 @@ function append(data: Chat.Message) {
 		msgType:data.contentType,
 		userType:data.userType,
 		createTime: dayjs().format("YYYY-MM-DD HH:mm:ss"),
+=======
+		fromId: user.info?.id,
+		toId: session.value?.userId,
+		avatar: user.info?.headImg,
+		nickName: user.info?.nickName,
+		createTime: dayjs().format('YYYY-MM-DD HH:mm:ss'),
+>>>>>>> 8ed1e16cfd9f69d277b4c1e3cb95e74f1b2f84cc
 		...data
 	});
 
 
+<<<<<<< HEAD
 }
+=======
+// 滚动到底部
+const scrollToBottom = debounce(() => {
+	nextTick(() => {
+		const box = document.querySelector('.cl-chat .chat-message .list');
+		box?.scroll({
+			top: 100000 + Math.random(),
+			behavior: 'smooth'
+		});
+	});
+}, 300);
+>>>>>>> 8ed1e16cfd9f69d277b4c1e3cb95e74f1b2f84cc
 
 // 刷新
 async function refresh() {
@@ -193,10 +251,10 @@ async function refreshUnCount() {
 	unCount.value=session.notReadCount;
 }
 
-provide("chat", {
-	get socket() {
-		return socket;
-	},
+provide('chat', {
+	// get socket() {
+	// 	return socket;
+	// },
 	send,
 	append,
 	expand

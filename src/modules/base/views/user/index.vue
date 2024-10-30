@@ -59,16 +59,16 @@
 </template>
 
 <script lang="ts" name="sys-user" setup>
-import { useTable, useUpsert, useCrud, setFocus } from "@cool-vue/crud";
-import { useCool } from "/@/cool";
-import DeptList from "./components/dept-list.vue";
-import UserMove from "./components/user-move.vue";
-import { useViewGroup } from "/@/plugins/view";
+import { useTable, useUpsert, useCrud, setFocus } from '@cool-vue/crud';
+import { useCool } from '/@/cool';
+import DeptList from './components/dept-list.vue';
+import UserMove from './components/user-move.vue';
+import { useViewGroup } from '/@/plugins/view';
 
 const { service, refs, setRefs } = useCool();
 
 const { ViewGroup } = useViewGroup({
-	title: "用户列表"
+	title: '用户列表'
 });
 
 // cl-crud
@@ -80,47 +80,48 @@ const Crud = useCrud({
 const Table = useTable({
 	columns: [
 		{
-			type: "selection",
+			type: 'selection',
 			width: 60
 		},
 		{
-			prop: "headImg",
-			label: "头像",
+			prop: 'headImg',
+			label: '头像',
 			component: {
-				name: "cl-avatar"
+				name: 'cl-avatar'
 			}
 		},
 		{
-			prop: "username",
-			label: "用户名",
+			prop: 'username',
+			label: '用户名',
 			minWidth: 150
 		},
 		{
-			prop: "name",
-			label: "姓名",
+			prop: 'name',
+			label: '姓名',
 			minWidth: 150
 		},
 		{
-			prop: "nickName",
-			label: "昵称",
+			prop: 'nickName',
+			label: '昵称',
 			minWidth: 150
 		},
 		{
-			prop: "departmentName",
-			label: "部门名称",
+			prop: 'departmentName',
+			label: '部门名称',
 			minWidth: 150
 		},
 		{
-			prop: "roleName",
-			label: "角色",
-			headerAlign: "center",
+			prop: 'roleName',
+			label: '角色',
+			headerAlign: 'center',
 			minWidth: 150,
 			dict: [],
 			formatter(row) {
-				return row.roleName?.split(",");
+				return row.roleName?.split(',');
 			}
 		},
 		{
+<<<<<<< HEAD
 			prop: "clientUserId",
 			label: "app用户ID",
 			minWidth: 150
@@ -128,30 +129,34 @@ const Table = useTable({
 		{
 			prop: "status",
 			label: "状态",
+=======
+			prop: 'status',
+			label: '状态',
+>>>>>>> 8ed1e16cfd9f69d277b4c1e3cb95e74f1b2f84cc
 			minWidth: 120,
 			component: {
-				name: "cl-switch"
+				name: 'cl-switch'
 			}
 		},
 		{
-			prop: "phone",
-			label: "手机号码",
+			prop: 'phone',
+			label: '手机号码',
 			minWidth: 150
 		},
 		{
-			prop: "remark",
-			label: "备注",
+			prop: 'remark',
+			label: '备注',
 			minWidth: 150
 		},
 		{
-			prop: "createTime",
-			label: "创建时间",
-			sortable: "desc",
+			prop: 'createTime',
+			label: '创建时间',
+			sortable: 'desc',
 			minWidth: 170
 		},
 		{
-			type: "op",
-			buttons: ["slot-btn", "edit", "delete"],
+			type: 'op',
+			buttons: ['slot-btn', 'edit', 'delete'],
 			width: 240
 		}
 	]
@@ -160,85 +165,95 @@ const Table = useTable({
 // cl-upsert
 const Upsert = useUpsert({
 	dialog: {
-		width: "800px"
+		width: '800px'
 	},
 
 	items: [
 		{
-			prop: "headImg",
-			label: "头像",
+			prop: 'headImg',
+			label: '头像',
 			component: {
-				name: "cl-upload",
+				name: 'cl-upload',
 				props: {
+<<<<<<< HEAD
 					text: "选择头像",
 
+=======
+					text: '选择头像'
+>>>>>>> 8ed1e16cfd9f69d277b4c1e3cb95e74f1b2f84cc
 				}
 			}
 		},
 		{
-			prop: "name",
-			label: "姓名",
+			prop: 'name',
+			label: '姓名',
 			span: 12,
 			required: true,
 			component: {
-				name: "el-input"
+				name: 'el-input'
 			}
 		},
 		{
-			prop: "nickName",
-			label: "昵称",
+			prop: 'nickName',
+			label: '昵称',
 			required: true,
 			span: 12,
 			component: {
-				name: "el-input"
+				name: 'el-input'
 			}
 		},
 		{
-			prop: "username",
-			label: "用户名",
+			prop: 'username',
+			label: '用户名',
 			required: true,
 			span: 12,
 			component: {
-				name: "el-input"
+				name: 'el-input'
 			}
 		},
 		() => {
 			return {
-				prop: "password",
-				label: "密码",
+				prop: 'password',
+				label: '密码',
 				span: 12,
-				required: Upsert.value?.mode == "add",
+				required: Upsert.value?.mode == 'add',
 				component: {
-					name: "el-input",
+					name: 'el-input',
 					props: {
-						type: "password"
+						type: 'password'
 					}
 				},
 				rules: [
 					{
 						min: 6,
 						max: 16,
-						message: "密码长度在 6 到 16 个字符"
+						message: '密码长度在 6 到 16 个字符'
 					}
 				]
 			};
 		},
 		{
+<<<<<<< HEAD
 			prop: "roleIdList",
 			label: "角色",
 			span: 12,
+=======
+			prop: 'roleIdList',
+			label: '角色',
+>>>>>>> 8ed1e16cfd9f69d277b4c1e3cb95e74f1b2f84cc
 			value: [],
 			required: true,
 			component: {
-				name: "el-select",
+				name: 'el-select',
 				options: [],
 				props: {
 					multiple: true,
-					"multiple-limit": 3
+					'multiple-limit': 3
 				}
 			}
 		},
 		{
+<<<<<<< HEAD
 			prop: "clientUserId",
 			label: "App用户ID",
 			required: false,
@@ -250,43 +265,47 @@ const Upsert = useUpsert({
 		{
 			prop: "phone",
 			label: "手机号码",
+=======
+			prop: 'phone',
+			label: '手机号码',
+>>>>>>> 8ed1e16cfd9f69d277b4c1e3cb95e74f1b2f84cc
 			span: 12,
 			component: {
-				name: "el-input"
+				name: 'el-input'
 			}
 		},
 		{
-			prop: "email",
-			label: "邮箱",
+			prop: 'email',
+			label: '邮箱',
 			span: 12,
 			component: {
-				name: "el-input"
+				name: 'el-input'
 			}
 		},
 		{
-			prop: "remark",
-			label: "备注",
+			prop: 'remark',
+			label: '备注',
 			component: {
-				name: "el-input",
+				name: 'el-input',
 				props: {
-					type: "textarea",
+					type: 'textarea',
 					rows: 4
 				}
 			}
 		},
 		{
-			prop: "status",
-			label: "状态",
+			prop: 'status',
+			label: '状态',
 			value: 1,
 			component: {
-				name: "el-radio-group",
+				name: 'el-radio-group',
 				options: [
 					{
-						label: "开启",
+						label: '开启',
 						value: 1
 					},
 					{
-						label: "关闭",
+						label: '关闭',
 						value: 0
 					}
 				]
@@ -303,12 +322,12 @@ const Upsert = useUpsert({
 
 	async onOpen() {
 		// 设置权限列表
-		service.base.sys.role.list().then((res) => {
+		service.base.sys.role.list().then(res => {
 			Upsert.value?.setOptions(
-				"roleIdList",
-				res.map((e) => {
+				'roleIdList',
+				res.map(e => {
 					return {
-						label: e.name || "",
+						label: e.name || '',
 						value: e.id
 					};
 				})
@@ -316,7 +335,7 @@ const Upsert = useUpsert({
 		});
 	},
 
-	plugins: [setFocus("name")]
+	plugins: [setFocus('name')]
 });
 
 // 刷新列表
@@ -338,7 +357,7 @@ async function toMove(item?: Eps.BaseSysDepartmentEntity) {
 	if (item) {
 		ids = [item.id!];
 	} else {
-		ids = Table.value?.selection.map((e) => e.id) || [];
+		ids = Table.value?.selection.map(e => e.id) || [];
 	}
 
 	refs.userMove.open(ids);

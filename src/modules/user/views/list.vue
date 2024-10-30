@@ -53,16 +53,23 @@
 </template>
 
 <script lang="ts" name="user-list" setup>
+<<<<<<< HEAD
 import { useCrud, useTable, useUpsert } from "@cool-vue/crud";
 import { useCool } from "/@/cool";
 import { reactive } from "vue";
 import { useDict } from "/$/dict";
+=======
+import { useCrud, useTable, useUpsert } from '@cool-vue/crud';
+import { useCool } from '/@/cool';
+import { reactive } from 'vue';
+>>>>>>> 8ed1e16cfd9f69d277b4c1e3cb95e74f1b2f84cc
 
 const { service } = useCool();
 
 const options=reactive({
 	onlines:[
 		{
+<<<<<<< HEAD
 			label:"在线",
 			value:true,
 			type: "success"
@@ -71,6 +78,54 @@ const options=reactive({
 			label:"离线",
 			value:false,
 			type:"danger"
+=======
+			label: '小程序',
+			value: 0,
+			type: 'danger'
+		},
+		{
+			label: '公众号',
+			value: 1,
+			type: 'success'
+		},
+		{
+			label: 'H5',
+			value: 2
+		}
+	],
+	gender: [
+		{
+			label: '未知',
+			value: 0,
+			type: 'info'
+		},
+		{
+			label: '男',
+			value: 1,
+			type: 'success'
+		},
+		{
+			label: '女',
+			value: 2,
+			type: 'danger'
+		}
+	],
+	status: [
+		{
+			label: '禁用',
+			value: 0,
+			type: 'danger'
+		},
+		{
+			label: '正常',
+			value: 1,
+			type: 'success'
+		},
+		{
+			label: '已注销',
+			value: 2,
+			type: 'warning'
+>>>>>>> 8ed1e16cfd9f69d277b4c1e3cb95e74f1b2f84cc
 		}
 	]
 });
@@ -83,23 +138,24 @@ const { dict } = useDict();
 const Table = useTable({
 	columns: [
 		{
-			type: "selection",
+			type: 'selection',
 			width: 60
 		},
 		{
-			label: "昵称",
-			prop: "nickName",
+			label: '昵称',
+			prop: 'nickName',
 			minWidth: 150
 		},
 		{
-			label: "头像",
-			prop: "avatarUrl",
+			label: '头像',
+			prop: 'avatarUrl',
 			minWidth: 100,
 			component: {
-				name: "cl-avatar"
+				name: 'cl-avatar'
 			}
 		},
 		{
+<<<<<<< HEAD
 			label: "用户类型",
 			prop: "sortation",
 			dict: dict.get("userSortation"),
@@ -158,21 +214,38 @@ const Table = useTable({
 			label: "职业",
 			prop: "career",
 			dict: dict.get("career"),
+=======
+			label: '手机',
+			prop: 'phone',
+			minWidth: 120
+		},
+		{
+			label: '性别',
+			prop: 'gender',
+			dict: options.gender,
 			minWidth: 100
 		},
 		{
-			label: "状态",
-			prop: "status",
+			label: '登录方式',
+			prop: 'loginType',
+			dict: options.loginType,
+>>>>>>> 8ed1e16cfd9f69d277b4c1e3cb95e74f1b2f84cc
+			minWidth: 100
+		},
+		{
+			label: '状态',
+			prop: 'status',
 			minWidth: 120,
 			dict: dict.get('userStatus')
 		},
 		{
-			label: "创建时间",
-			prop: "createTime",
-			sortable: "desc",
+			label: '创建时间',
+			prop: 'createTime',
+			sortable: 'desc',
 			minWidth: 170
 		},
 		{
+<<<<<<< HEAD
 			label: "UID",
 			prop: "id",
 			minWidth: 150
@@ -181,6 +254,11 @@ const Table = useTable({
 			label: "操作",
 			type: "op",
 			buttons: ["edit", "delete"]
+=======
+			label: '操作',
+			type: 'op',
+			buttons: ['edit', 'delete']
+>>>>>>> 8ed1e16cfd9f69d277b4c1e3cb95e74f1b2f84cc
 		}
 	]
 });
@@ -188,15 +266,16 @@ const Table = useTable({
 // cl-upsert
 const Upsert = useUpsert({
 	dialog: {
-		width: "600px"
+		width: '600px'
 	},
 	items: [
 		{
-			prop: "avatarUrl",
-			label: "头像",
-			component: { name: "cl-upload" }
+			prop: 'avatarUrl',
+			label: '头像',
+			component: { name: 'cl-upload' }
 		},
 		{
+<<<<<<< HEAD
 			prop: "nickName",
 			label: "昵称",
 			component: { name: "el-input" },
@@ -213,14 +292,25 @@ const Upsert = useUpsert({
 			prop: "phone",
 			label: "手机号",
 			span: 12,
+=======
+			prop: 'nickName',
+			label: '昵称',
+			component: { name: 'el-input' },
+			required: true
+		},
+		{
+			prop: 'phone',
+			label: '手机号',
+>>>>>>> 8ed1e16cfd9f69d277b4c1e3cb95e74f1b2f84cc
 			component: {
-				name: "el-input",
+				name: 'el-input',
 				props: {
 					maxlength: 11
 				}
 			}
 		},
 		{
+<<<<<<< HEAD
 			label: "出生日期",
 			prop: "birthday",
 			span: 12,
@@ -274,6 +364,23 @@ const Upsert = useUpsert({
 			component: {
 				name: "el-radio-group",
 				options: dict.get('userStatus')
+=======
+			prop: 'gender',
+			label: '性别',
+			value: 1,
+			component: {
+				name: 'el-radio-group',
+				options: options.gender
+			}
+		},
+		{
+			prop: 'status',
+			label: '状态',
+			value: 1,
+			component: {
+				name: 'el-radio-group',
+				options: options.status
+>>>>>>> 8ed1e16cfd9f69d277b4c1e3cb95e74f1b2f84cc
 			}
 		}
 	]
@@ -284,7 +391,7 @@ const Crud = useCrud(
 	{
 		service: service.user.info
 	},
-	(app) => {
+	app => {
 		app.refresh();
 	}
 );

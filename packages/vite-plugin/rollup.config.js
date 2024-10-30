@@ -5,6 +5,8 @@ import { defineConfig } from "rollup";
 export default defineConfig({
 	input: ["src/index.ts"],
 
+	external: ["lodash"],
+
 	output: {
 		name: "index",
 		format: "umd",

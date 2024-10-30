@@ -6,7 +6,7 @@
 		}"
 	>
 		<el-image
-			:src="urls[0]"
+			:src="url"
 			:fit="fit"
 			:lazy="lazy"
 			:preview-src-list="urls"
@@ -26,13 +26,13 @@
 </template>
 
 <script lang="ts">
-import { type PropType, computed, defineComponent } from "vue";
-import { isArray, isNumber, isString } from "lodash-es";
-import { PictureFilled } from "@element-plus/icons-vue";
-import { parsePx } from "/@/cool/utils";
+import { type PropType, computed, defineComponent } from 'vue';
+import { isArray, isNumber, isString } from 'lodash-es';
+import { PictureFilled } from '@element-plus/icons-vue';
+import { parsePx } from '/@/cool/utils';
 
 export default defineComponent({
-	name: "cl-image",
+	name: 'cl-image',
 
 	components: {
 		PictureFilled
@@ -47,9 +47,10 @@ export default defineComponent({
 		},
 		lazy: Boolean,
 		fit: {
-			type: String as PropType<"" | "contain" | "cover" | "none" | "fill" | "scale-down">,
-			default: "cover"
-		}
+			type: String as PropType<'' | 'contain' | 'cover' | 'none' | 'fill' | 'scale-down'>,
+			default: 'cover'
+		},
+		compress: String as PropType<'oss' | 'none'>
 	},
 
 	setup(props) {
@@ -61,7 +62,7 @@ export default defineComponent({
 			}
 
 			if (isString(urls)) {
-				return (urls || "").split(",").filter(Boolean);
+				return (urls || '').split(',').filter(Boolean);
 			}
 
 			return [];
@@ -76,7 +77,20 @@ export default defineComponent({
 			};
 		});
 
+		const url = computed(() => {
+			const v = urls.value[0];
+
+			if (props.compress == 'oss') {
+				return (
+					v + `?x-oss-process=image/resize,m_fill,h_${style.value.h},w_${style.value.w}`
+				);
+			}
+
+			return v;
+		});
+
 		return {
+			url,
 			urls,
 			style
 		};
